@@ -259,8 +259,27 @@ class CurrentSettings extends FormattingSettingsGroup {
     value: defaultSettings.layout.currentSettings.showMore,
   } as unknown as formattingSettings.ToggleSwitch);
 
+  scaleIconText = new formattingSettings.ToggleSwitch({
+    name: "scaleIconText",
+    descriptionKey: "current_scaleIconText_description",
+    displayNameKey: "current_scaleIconText_displayName",
+    value: defaultSettings.layout.currentSettings.scaleIconText,
+  } as unknown as formattingSettings.ToggleSwitch);
+
+  showCurrentInScopeOnly = new formattingSettings.ToggleSwitch({
+    name: "showCurrentInScopeOnly",
+    descriptionKey: "current_showCurrentInScopeOnly_description",
+    displayNameKey: "current_showCurrentInScopeOnly_displayName",
+    value: defaultSettings.layout.currentSettings.showCurrentInScopeOnly,
+  } as unknown as formattingSettings.ToggleSwitch);
+
   topLevelSlice: formattingSettings.SimpleSlice = this.showCurrent;
-  slices: Array<FormattingSettingsSlice> = [this.showIconText, this.showMore];
+  slices: Array<FormattingSettingsSlice> = [
+    this.showIconText,
+    this.scaleIconText,
+    this.showCurrentInScopeOnly,
+    this.showMore,
+  ];
 }
 
 class MoveSettings extends FormattingSettingsGroup {

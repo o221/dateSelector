@@ -1,10 +1,10 @@
 {
     "visual": {
         "name": "dateSelector",
-        "displayName": "Date Selector 3.26.625",
+        "displayName": "Date Selector 3.26.909",
         "guid": "dateSel4A1A0033E6F54D1B809B6E51058D54E3",
         "visualClassName": "DateSelector",
-        "version": "3.2026.06.25",
+        "version": "3.2026.09.09",
         "description": "Date Range Selector",
         "supportUrl": "https://github.com/o221/dateSelector/issues",
         "gitHubUrl": "https://github.com/o221/dateSelector"

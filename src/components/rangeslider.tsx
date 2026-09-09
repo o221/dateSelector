@@ -108,6 +108,10 @@ export default function RangeSlider(props: Props) {
   const [sliderEnd, setSliderEnd] = React.useState<number>(() =>
     sliderMarkNumber(safeDates.end, safeRangeScope.start),
   );
+  const sliderMax = React.useMemo(
+    () => sliderMarkNumber(safeRangeScope.end, safeRangeScope.start) || 1,
+    [safeRangeScope.end, safeRangeScope.start],
+  );
 
   // Ref to store the initial values and range length at the start of a Ctrl+drag
   const dragStartRef = React.useRef<{
@@ -186,6 +190,20 @@ export default function RangeSlider(props: Props) {
   /**
    * Handles the live drag/change event of the slider.
    */
+  const moveWindowWithinBounds = React.useCallback(
+    (start: number, end: number, max: number): [number, number] => {
+      const length = end - start;
+      if (start < 0) {
+        return [0, Math.min(max, length)];
+      }
+      if (end > max) {
+        return [Math.max(0, max - length), max];
+      }
+      return [start, end];
+    },
+    [],
+  );
+
   const handleOnChange = (
     event: Event | React.SyntheticEvent,
     val: number | number[],
@@ -210,9 +228,25 @@ export default function RangeSlider(props: Props) {
         };
       }
 
-      const delta = values[thumb] - dragStartRef.current.start;
-      newValues[0] = dragStartRef.current.start + delta;
-      newValues[1] = newValues[0] + dragStartRef.current.length;
+      const dragStart = dragStartRef.current;
+      const anchorAtStartThumb = thumb === 0;
+      const anchorValue = anchorAtStartThumb ? dragStart.start : dragStart.end;
+      let targetThumbValue = values[thumb];
+
+      if (!isStepped) {
+        targetThumbValue = closestMark([targetThumbValue])[0];
+      }
+
+      const delta = targetThumbValue - anchorValue;
+      const shiftedStart = dragStart.start + delta;
+      const shiftedEnd = dragStart.end + delta;
+      const [boundedStart, boundedEnd] = moveWindowWithinBounds(
+        shiftedStart,
+        shiftedEnd,
+        sliderMax,
+      );
+      newValues[0] = boundedStart;
+      newValues[1] = boundedEnd;
     } else {
       if (singleDay) {
         newValues =
@@ -224,14 +258,9 @@ export default function RangeSlider(props: Props) {
     }
 
     if (!isStepped) {
-      if (isCtrlPressed && !isKeyboard) {
-        newValues = [
-          closestMark([newValues[0]])[0],
-          closestMark([newValues[1]])[0],
-        ];
-      } else if (thumb === 0) {
+      if (!(isCtrlPressed && !isKeyboard) && thumb === 0) {
         newValues[0] = closestMark([newValues[0]])[0];
-      } else {
+      } else if (!(isCtrlPressed && !isKeyboard)) {
         newValues[1] = closestMark([newValues[1]])[0];
       }
     }
@@ -250,13 +279,9 @@ export default function RangeSlider(props: Props) {
     val: number | number[],
   ) => {
     if (softBail) return;
-    const values = Array.isArray(val) ? val : [val, val];
-    const newStart = values[0] ?? sliderStart;
-    const newEnd = values[1] ?? sliderEnd;
-
     dragStartRef.current = null;
 
-    onCommit(toRangeDates([newStart, newEnd]));
+    onCommit(toRangeDates([sliderStart, sliderEnd]));
   };
 
   // Safely resolve the mark definitions for the child layout
@@ -291,7 +316,7 @@ export default function RangeSlider(props: Props) {
       valueLabelFormat={(val) =>
         sliderMarkText(val, safeRangeScope.start, locale)
       }
-      max={sliderMarkNumber(safeRangeScope.end, safeRangeScope.start) || 1}
+      max={sliderMax}
       onChange={handleOnChange}
       localization={localization}
       {...props}

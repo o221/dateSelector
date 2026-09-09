@@ -62,7 +62,9 @@ export interface Settings {
     currentSettings: {
       showCurrent?: boolean;
       showIconText?: boolean;
+      scaleIconText?: boolean;
       showMore?: boolean;
+      showCurrentInScopeOnly?: boolean;
     };
     moveSettings: {
       showMove?: boolean;
@@ -178,6 +180,12 @@ export interface dateCardProps {
   // boolean value indicating whether to show the current date range
   showCurrent?: boolean;
 
+  // boolean value indicating whether the icon badge text should scale with the icon
+  scaleIconText?: boolean;
+
+  // boolean value indicating whether current-period buttons should only render when fully contained in scope
+  showCurrentInScopeOnly?: boolean;
+
   // string value representing the font color to use
   fontColor?: string;
 
@@ -288,6 +296,7 @@ export interface stepProps {
   stepValue?: string;
   payProps?: pay;
   viz?: boolean;
+  fontSize?: number;
   handleStep?: (newValue: string) => void;
   handleViz?: (viz: boolean) => void;
   handleClick?: (event: React.MouseEvent<HTMLElement>) => void;
@@ -314,7 +323,9 @@ export interface UseCurrentProps {
   showCurrent?: boolean;
   stepValue?: string;
   showIconText?: boolean;
+  scaleIconText?: boolean;
   showMore?: boolean;
+  showCurrentInScopeOnly?: boolean;
   current: any;
   handleVal?: (val: any) => void;
   handleStep?: (newValue: string) => void;

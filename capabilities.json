@@ -389,7 +389,17 @@
                         "bool": true
                     }
                 },
+                "scaleIconText": {
+                    "type": {
+                        "bool": true
+                    }
+                },
                 "showMore": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "showCurrentInScopeOnly": {
                     "type": {
                         "bool": true
                     }

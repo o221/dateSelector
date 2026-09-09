@@ -114,6 +114,32 @@ export function isDateRange(obj: any): obj is dateRange {
   return obj && typeof obj === "object" && isDate(obj.start) && isDate(obj.end);
 }
 
+export const isRangeFullyContainedInScope = (
+  range?: dateRange | null,
+  scope?: dateRange | null,
+): boolean => {
+  if (
+    !range ||
+    !scope ||
+    !range.start ||
+    !range.end ||
+    !scope.start ||
+    !scope.end
+  ) {
+    return false;
+  }
+
+  const normalizedScope = {
+    start: startOfDay(scope.start),
+    end: endOfDay(scope.end),
+  };
+
+  return (
+    isWithinInterval(range.start, normalizedScope) &&
+    isWithinInterval(range.end, normalizedScope)
+  );
+};
+
 /**
  * Convert a plain object with Date or ISO string fields into a proper dateRange.
  * Falls back to parsing if not already Date.
