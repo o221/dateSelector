@@ -8,7 +8,7 @@ All notable changes to this project are documented in this file.
 
 - Fixed Ctrl+drag and Ctrl+click on the range slider to move the selected period as a block.
 - Improved slider bound handling so the selected range stays valid at the edges without collapsing width.
-- Added a new Current Period setting: Scale Icon Text (scals with the theme text size).
+- Added a new Current Period setting: Scale Icon Text (scales with the theme text size).
 - Added a new Current Period setting: Hide if Missing (When enabled, only show current-period buttons when the full period is within available scope).
 - Added localized labels and descriptions for the new Current Period settings across supported locales.
 
