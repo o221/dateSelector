@@ -71,6 +71,8 @@ export const settingProps = (
   const singleDay = calendar.singleDay.value;
   const limitToScope = calendar.limitToScope.value;
   const forceStartRange = calendar.forceStartRange.value;
+  const showCurrentInScopeOnly = current.showCurrentInScopeOnly.value;
+  const scaleIconText = current.scaleIconText.value;
 
   const rangeScope = mapDataView(options).category?.rangeValues;
   const weekStartDay = getDayNum(week.weekStartDay.value);
@@ -135,6 +137,8 @@ export const settingProps = (
     showCurrent: current.showCurrent.value,
     showMore: current.showMore.value,
     showIconText: current.showIconText.value,
+    scaleIconText,
+    showCurrentInScopeOnly,
     enableSlider: timeline.enableSlider.value,
     showSlider: timeline.showSlider.value,
     show2ndSlider: timeline.show2ndSlider.value,

@@ -38,7 +38,9 @@ export const defaultSettings = {
     currentSettings: {
       showCurrent: true,
       showIconText: false,
+      scaleIconText: false,
       showMore: false,
+      showCurrentInScopeOnly: true,
     },
     moveSettings: {
       showMove: true,
@@ -150,6 +152,8 @@ export const initialState: dateCardProps = {
   showHelpIcon: layout.helpSettings.showHelpIcon,
   showMore: layout.currentSettings.showMore,
   showIconText: layout.currentSettings.showIconText,
+  scaleIconText: layout.currentSettings.scaleIconText,
+  showCurrentInScopeOnly: layout.currentSettings.showCurrentInScopeOnly,
   singleDay: calendar.singleDay,
   enableSlider: layout.timelineSettings.enableSlider,
   showSlider: layout.timelineSettings.showSlider,
