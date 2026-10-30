@@ -64,6 +64,7 @@ const TopRow: React.FC<dateCardProps> = ({
             <Box>
               <UseCurrent
                 {...props}
+                dates={dates}
                 handleStep={setStepValue}
                 localization={localization}
               />

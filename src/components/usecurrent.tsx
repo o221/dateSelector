@@ -1,6 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
+import ToggleButton from "@mui/material/ToggleButton";
 import Typography from "@mui/material/Typography";
 import { endOfDay, startOfDay } from "date-fns";
 
@@ -8,7 +8,7 @@ import { dateCardProps, dateRange } from "../interface";
 import RngeTooltip from "./rngetooltip";
 import DateIntervalPicker from "./dateintervalpicker";
 import { useLocalization } from "../localeutils";
-import { isRangeFullyContainedInScope } from "../dateutils";
+import { clampRangeToScope, isRangeFullyContainedInScope } from "../dateutils";
 
 export default function UseCurrent(props: dateCardProps) {
   const {
@@ -19,6 +19,7 @@ export default function UseCurrent(props: dateCardProps) {
     scaleIconText,
     showCurrentInScopeOnly,
     current,
+    dates,
     stepValue,
     singleDay,
     fontSize,
@@ -49,6 +50,50 @@ export default function UseCurrent(props: dateCardProps) {
   const safeShowIconText = showIconText ?? false;
   const safeScaleIconText = scaleIconText ?? false;
   const safeShowCurrentInScopeOnly = showCurrentInScopeOnly ?? true;
+
+  const toDate = React.useCallback((value: unknown): Date | null => {
+    if (value instanceof Date) {
+      return isNaN(value.getTime()) ? null : value;
+    }
+
+    if (typeof value === "string" || typeof value === "number") {
+      const parsed = new Date(value);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    return null;
+  }, []);
+
+  const isSameLocalDay = React.useCallback(
+    (left: unknown, right: unknown): boolean => {
+      const leftDate = toDate(left);
+      const rightDate = toDate(right);
+      if (!leftDate || !rightDate) {
+        return false;
+      }
+
+      return (
+        leftDate.getFullYear() === rightDate.getFullYear() &&
+        leftDate.getMonth() === rightDate.getMonth() &&
+        leftDate.getDate() === rightDate.getDate()
+      );
+    },
+    [toDate],
+  );
+
+  const isSameRangeByLocalDay = React.useCallback(
+    (left?: dateRange | null, right?: dateRange | null): boolean => {
+      if (!left || !right) {
+        return false;
+      }
+
+      return (
+        isSameLocalDay(left.start, right.start) &&
+        isSameLocalDay(left.end, right.end)
+      );
+    },
+    [isSameLocalDay],
+  );
 
   /*
    * --------------------------------------------------------------------------
@@ -195,120 +240,136 @@ export default function UseCurrent(props: dateCardProps) {
 
           return showMore;
         })
-        .map((item: any, index: number) => (
-          <DateIntervalPicker
-            handleVal={handleDate}
-            item={item}
-            key={`dip${item.thisRange}${index}`}
-            localization={i18n}
-          >
-            <RngeTooltip
-              title={undefined}
-              key={`rtt${item.thisRange}${index}`}
-              detailRow={
-                item.menu !== "2" && item.menu !== "12"
-                  ? `${i18n.getDisplayName(
-                      "useCurrentRightClick",
-                    )} [${item.plural}]`
-                  : ""
+        .map((item: any, index: number) => {
+          const selectedRange: dateRange | null = item.thisRange
+            ? {
+                start: item.thisRange.start,
+                end: singleDay ? item.thisRange.start : item.thisRange.end,
               }
-              placement="bottom"
-              topRow={
-                item.tip +
-                (item.step === safeStepValue && item.menu !== "2" ? " (T)" : "")
-              }
+            : null;
+          const selectedComparableRange =
+            selectedRange && props.limitToScope
+              ? clampRangeToScope(selectedRange, normalizedScope)
+              : selectedRange;
+          const isSelected = !!(
+            selectedComparableRange &&
+            dates &&
+            isSameRangeByLocalDay(dates, selectedComparableRange)
+          );
+
+          return (
+            <DateIntervalPicker
+              handleVal={handleDate}
+              item={item}
+              key={`dip${item.thisRange}${index}`}
+              localization={i18n}
             >
-              <IconButton
-                size="small"
-                color="primary"
-                value={item.tip.toLowerCase().trim()}
-                onClick={() => {
-                  if (item.thisRange) {
-                    handleDate(item.thisRange);
-                    handleStepChange(item.step);
-                  } else {
-                    toggleTtl();
-                  }
-                }}
-                sx={{
-                  /*
-                   * Remove the normal IconButton minimum width so that
-                   * text determines the actual width.
-                   */
-                  minWidth: 0,
-
-                  /*
-                   * Use our own compact padding.
-                   */
-                  p: `${controlPadding}px`,
-
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-
-                  /*
-                   * Do not allow the browser to shrink the label.
-                   */
-                  whiteSpace: "nowrap",
-                }}
+              <RngeTooltip
+                title={undefined}
+                key={`rtt${item.thisRange}${index}`}
+                detailRow={
+                  item.menu !== "2" && item.menu !== "12"
+                    ? `${i18n.getDisplayName(
+                        "useCurrentRightClick",
+                      )} [${item.plural}]`
+                    : ""
+                }
+                placement="bottom"
+                topRow={
+                  item.tip +
+                  (item.step === safeStepValue && item.menu !== "2"
+                    ? " (T)"
+                    : "")
+                }
               >
-                <Box
+                <ToggleButton
+                  size="small"
+                  color="primary"
+                  selected={isSelected}
+                  value={item.tip.toLowerCase().trim()}
+                  onClick={() => {
+                    if (item.thisRange) {
+                      handleDate(item.thisRange);
+                      handleStepChange(item.step);
+                    } else {
+                      toggleTtl();
+                    }
+                  }}
                   sx={{
+                    minWidth: 0,
+                    p: `${controlPadding}px`,
+                    textTransform: "none",
+                    borderRadius: "5px",
+                    border: 0,
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: `${iconTextGap}px`,
-                    lineHeight: 1,
                     whiteSpace: "nowrap",
+                    color: "inherit",
+                    "&.Mui-selected": {
+                      border: 1,
+                    },
                   }}
                 >
                   <Box
                     sx={{
-                      width: `${iconSize}px`,
-                      height: `${iconSize}px`,
-                      flex: `0 0 ${iconSize}px`,
-
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",
-
+                      gap: `${iconTextGap}px`,
                       lineHeight: 1,
-
-                      "& svg": {
-                        width: "100%",
-                        height: "100%",
-                        display: "block",
-                      },
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    {item.icon}
-                  </Box>
-
-                  {safeShowIconText && (
-                    <Typography
-                      component="span"
+                    <Box
                       sx={{
-                        color: "text.secondary",
+                        width: `${iconSize}px`,
+                        height: `${iconSize}px`,
+                        flex: `0 0 ${iconSize}px`,
 
-                        display: "inline-block",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
 
-                        fontSize: `${labelFontSize}px`,
                         lineHeight: 1,
+                        color: "inherit",
 
-                        whiteSpace: "nowrap",
-
-                        m: 0,
-                        p: 0,
+                        "& svg": {
+                          width: "100%",
+                          height: "100%",
+                          display: "block",
+                        },
                       }}
                     >
-                      {item.thisPeriod}
-                    </Typography>
-                  )}
-                </Box>
-              </IconButton>
-            </RngeTooltip>
-          </DateIntervalPicker>
-        ))}
+                      {item.icon}
+                    </Box>
+
+                    {safeShowIconText && (
+                      <Typography
+                        component="span"
+                        sx={{
+                          color: isSelected ? "inherit" : "text.secondary",
+
+                          display: "inline-block",
+
+                          fontSize: `${labelFontSize}px`,
+                          lineHeight: 1,
+
+                          whiteSpace: "nowrap",
+
+                          m: 0,
+                          p: 0,
+                        }}
+                      >
+                        {item.thisPeriod}
+                      </Typography>
+                    )}
+                  </Box>
+                </ToggleButton>
+              </RngeTooltip>
+            </DateIntervalPicker>
+          );
+        })}
     </Box>
   );
 }
