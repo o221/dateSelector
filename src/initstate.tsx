@@ -27,6 +27,7 @@ export const defaultSettings = {
     payLength: 14,
     fmtDate: "EEE, d MMM yy",
     limitToScope: false,
+    applyOnDateSelect: false,
     forceStartRange: false,
   },
   layout: {
@@ -155,6 +156,7 @@ export const initialState: dateCardProps = {
   scaleIconText: layout.currentSettings.scaleIconText,
   showCurrentInScopeOnly: layout.currentSettings.showCurrentInScopeOnly,
   singleDay: calendar.singleDay,
+  applyOnDateSelect: calendar.applyOnDateSelect,
   enableSlider: layout.timelineSettings.enableSlider,
   showSlider: layout.timelineSettings.showSlider,
   show2ndSlider: layout.timelineSettings.show2ndSlider,

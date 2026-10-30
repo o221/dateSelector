@@ -70,6 +70,7 @@ export const settingProps = (
   const stepInit = String(calendar.stepInit.value);
   const singleDay = calendar.singleDay.value;
   const limitToScope = calendar.limitToScope.value;
+  const applyOnDateSelect = calendar.applyOnDateSelect.value;
   const forceStartRange = calendar.forceStartRange.value;
   const showCurrentInScopeOnly = current.showCurrentInScopeOnly.value;
   const scaleIconText = current.scaleIconText.value;
@@ -98,6 +99,7 @@ export const settingProps = (
     stepInit,
     singleDay,
     limitToScope,
+    applyOnDateSelect,
     forceStartRange,
 
     stepSkip: {

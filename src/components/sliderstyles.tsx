@@ -81,7 +81,7 @@ export const getTopSliderStyles = (theme: Theme) => {
 export const getBottomSliderStyles = (theme: Theme) => {
   return {
     width: "98%",
-    marginTop: -20,
+    marginTop: -10,
     "& .MuiSlider-thumb": {
       // marginTop: 0.8,
       top: "1rem",
@@ -104,7 +104,7 @@ export const getBottomSliderStyles = (theme: Theme) => {
       height: 1.1,
     },
     "& .MuiSlider-mark": {
-      top: 18,
+      top: 16,
       height: 10,
       width: 1.1,
       borderRadius: "0%",

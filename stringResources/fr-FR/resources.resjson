@@ -34,6 +34,8 @@
   "calendar_singleDay_displayName": "Un jour seulement",
   "calendar_limitToScope_displayName": "Limiter à la portée",
   "calendar_limitToScope_description": "Restreindre la sélection des dates à la plage disponible.",
+  "calendar_applyOnDateSelect_displayName": "Appliquer au choix de date",
+  "calendar_applyOnDateSelect_description": "Appliquer immédiatement le filtre lorsqu'une date est choisie dans le sélecteur calendrier.",
   "timeline_description": "Configurer les options et paramètres de visibilité de la chronologie.",
   "timeline_displayName": "Chronologie",
   "timeline_enableSlider_description": "Afficher le bouton pour afficher ou masquer la chronologie",

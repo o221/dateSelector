@@ -34,6 +34,8 @@
   "calendar_singleDay_displayName": "Alleen enkele dag",
   "calendar_limitToScope_displayName": "Beperk tot bereik",
   "calendar_limitToScope_description": "Beperk datumselecties tot het beschikbare bereik.",
+  "calendar_applyOnDateSelect_displayName": "Toepassen bij datumkeuze",
+  "calendar_applyOnDateSelect_description": "Pas het filter direct toe wanneer een datum in de kalenderkiezer wordt geselecteerd.",
   "timeline_description": "Tijdlijnzichtbaarheid en instellingen configureren.",
   "timeline_displayName": "Tijdlijn",
   "timeline_enableSlider_description": "Knop weergeven om tijdlijn te tonen of te verbergen",

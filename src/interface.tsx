@@ -47,6 +47,7 @@ export interface Settings {
   calendar?: {
     singleDay?: boolean;
     limitToScope?: boolean;
+    applyOnDateSelect?: boolean;
     startRange?: string;
     stepInit?: string;
     payLength?: number;
@@ -226,6 +227,9 @@ export interface dateCardProps {
 
   // boolean value indicating whether to constrain slelction to date range scope
   limitToScope?: boolean;
+
+  // boolean value indicating whether date picker selections apply immediately
+  applyOnDateSelect?: boolean;
 
   // boolean value indicating whether to show arrows to move/expand by period step
   showMove?: boolean;

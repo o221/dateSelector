@@ -34,6 +34,7 @@ const DateRange = (props: dateCardProps) => {
   } = props;
   const fallbackLocalization = useLocalization();
   const i18n = localization ?? fallbackLocalization;
+  const applyOnDateSelect = props.applyOnDateSelect ?? false;
   const safeDates = dates ??
     startupFilter ??
     rangeScope ?? { start: new Date(), end: new Date() };
@@ -68,6 +69,18 @@ const DateRange = (props: dateCardProps) => {
     const { id, value } = e.target;
     if (id === "start") setStartText(value);
     else setEndText(value);
+
+    if (!applyOnDateSelect || value.length !== 10) {
+      return;
+    }
+
+    const parsedDate = parse(value, "yyyy-MM-dd", new Date());
+    if (
+      isValid(parsedDate) &&
+      format(parsedDate, "yyyy-MM-dd", { locale }) === value
+    ) {
+      doUpdate(id as "start" | "end", value);
+    }
   };
 
   // const handleDate = (val: dateRange) => {

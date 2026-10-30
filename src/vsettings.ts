@@ -180,6 +180,13 @@ class CalendarSettings extends FormattingSettingsCard {
     value: defaultSettings.calendar.limitToScope,
   } as unknown as formattingSettings.ToggleSwitch);
 
+  applyOnDateSelect = new formattingSettings.ToggleSwitch({
+    name: "applyOnDateSelect",
+    descriptionKey: "calendar_applyOnDateSelect_description",
+    displayNameKey: "calendar_applyOnDateSelect_displayName",
+    value: defaultSettings.calendar.applyOnDateSelect,
+  } as unknown as formattingSettings.ToggleSwitch);
+
   forceStartRange = new formattingSettings.ToggleSwitch({
     name: "forceStartRange",
     descriptionKey: "calendar_forceStartRange_description",
@@ -190,6 +197,7 @@ class CalendarSettings extends FormattingSettingsCard {
   slices: Array<FormattingSettingsSlice> = [
     this.singleDay,
     this.limitToScope,
+    this.applyOnDateSelect,
     this.startRange,
     this.forceStartRange,
     this.stepInit,

@@ -34,6 +34,8 @@
   "calendar_singleDay_displayName": "Solo un día",
   "calendar_limitToScope_displayName": "Limitar al rango",
   "calendar_limitToScope_description": "Restringir la selección de fechas al rango disponible.",
+  "calendar_applyOnDateSelect_displayName": "Aplicar al elegir fecha",
+  "calendar_applyOnDateSelect_description": "Aplicar el filtro inmediatamente al seleccionar una fecha desde el selector de calendario.",
   "timeline_description": "Configurar opciones y ajustes de visibilidad de la línea de tiempo.",
   "timeline_displayName": "Línea de tiempo",
   "timeline_enableSlider_description": "Mostrar el botón para mostrar u ocultar la línea de tiempo",

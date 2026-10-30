@@ -181,6 +181,11 @@
                         "bool": true
                     }
                 },
+                "applyOnDateSelect": {
+                    "type": {
+                        "bool": true
+                    }
+                },
                 "forceStartRange": {
                     "type": {
                         "bool": true

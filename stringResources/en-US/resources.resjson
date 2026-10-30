@@ -34,6 +34,8 @@
   "calendar_singleDay_displayName": "Single Day Only",
   "calendar_limitToScope_displayName": "Limit to Scope",
   "calendar_limitToScope_description": "Restrict date selections to the available range scope.",
+  "calendar_applyOnDateSelect_displayName": "Apply on date pick",
+  "calendar_applyOnDateSelect_description": "Apply the filter immediately when a date is selected from the calendar picker.",
   "timeline_description": "Configure timeline visibility options and settings.",
   "timeline_displayName": "Timeline",
   "timeline_enableSlider_description": "Show the button to show or hide timeline",
