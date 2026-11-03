@@ -372,8 +372,15 @@ class StartupRangeSettings extends FormattingSettingsGroup {
     value: defaultSettings.layout?.startupRangeSettings?.showStartIconText,
   } as unknown as formattingSettings.ToggleSwitch);
 
+  hideIfCurrent = new formattingSettings.ToggleSwitch({
+    name: "hideIfCurrent",
+    descriptionKey: "calendar_hideIfCurrent_description",
+    displayNameKey: "calendar_hideIfCurrent_displayName",
+    value: defaultSettings.layout?.startupRangeSettings?.hideIfCurrent ?? true,
+  } as unknown as formattingSettings.ToggleSwitch);
+
   topLevelSlice: formattingSettings.SimpleSlice = this.showStartupRangeButton;
-  slices: Array<FormattingSettingsSlice> = [this.showStartIconText];
+  slices: Array<FormattingSettingsSlice> = [this.showStartIconText, this.hideIfCurrent];
 }
 
 class LayoutSettings extends FormattingSettingsCompositeCard {

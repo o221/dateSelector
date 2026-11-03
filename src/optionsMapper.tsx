@@ -75,6 +75,7 @@ export const settingProps = (
   const forceStartRange = calendar.forceStartRange.value;
   const showStartupRangeButton = startupRange.showStartupRangeButton.value;
   const showStartIconText = startupRange.showStartIconText?.value ?? false;
+  const hideIfCurrent = startupRange.hideIfCurrent?.value ?? true;
   const disableRefreshButton = calendar.disableRefreshButton?.value ?? false;
   const showCurrentInScopeOnly = current.showCurrentInScopeOnly.value;
   const scaleIconText = current.scaleIconText.value;
@@ -107,6 +108,7 @@ export const settingProps = (
     forceStartRange,
     showStartupRangeButton,
     showStartIconText,
+    hideIfCurrent,
     disableRefreshButton,
 
     stepSkip: {

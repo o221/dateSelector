@@ -178,6 +178,8 @@
   "calendar_showStartupRangeButton_displayName": "Afficher le bouton de plage de démarrage",
   "calendar_disableRefreshButton_description": "Contrôler l'icône de départ/réinitialisation affichée entre les dates lorsque la plage sélectionnée diffère de la plage de démarrage.",
   "calendar_disableRefreshButton_displayName": "Texte de l'icône de départ",
+  "calendar_hideIfCurrent_displayName": "Masquer si actuel",
+  "calendar_hideIfCurrent_description": "Masquer l'icône de plage de démarrage si elle correspond à un bouton de période actuelle existant.",
   "startRange_sync": "Par défaut",
   "startRange_rangeScope": "Tout dans la portée",
   "startRange_today": "Aujourd'hui",
@@ -281,3 +283,4 @@
   "dateIntervalExtend": "Ajouter des étapes futures (+) ou passées (-) à partir d'aujourd'hui",
   "dateIntervalToday": "Aujourd'hui +/- "
 }
+

@@ -178,6 +178,8 @@
   "calendar_showStartupRangeButton_displayName": "Startbereikknop tonen",
   "calendar_disableRefreshButton_description": "Beheer het start-/reset-pictogram tussen de datums wanneer het geselecteerde bereik afwijkt van het startbereik.",
   "calendar_disableRefreshButton_displayName": "Startpictogramtekst",
+  "calendar_hideIfCurrent_displayName": "Verbergen als huidig",
+  "calendar_hideIfCurrent_description": "Verberg het pictogram voor het opstartbereik als het overeenkomt met een bestaande huidigeperiodeknop.",
   "startRange_sync": "Standaard",
   "startRange_rangeScope": "Alles in bereik",
   "startRange_today": "Vandaag",
@@ -281,3 +283,4 @@
   "dateIntervalExtend": "Voeg toekomstige (+) of vorige (-) stappen vanaf vandaag toe",
   "dateIntervalToday": "Vandaag +/- "
 }
+

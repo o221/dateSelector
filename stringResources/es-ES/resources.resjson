@@ -178,6 +178,8 @@
   "calendar_showStartupRangeButton_displayName": "Mostrar botón de rango de inicio",
   "calendar_disableRefreshButton_description": "Controlar el icono de inicio/restablecimiento mostrado entre las fechas cuando el rango seleccionado difiere del rango de inicio.",
   "calendar_disableRefreshButton_displayName": "Texto del icono de inicio",
+  "calendar_hideIfCurrent_displayName": "Ocultar si está vigente",
+  "calendar_hideIfCurrent_description": "Ocultar el icono de rango de inicio si coincide con un botón de período actual existente.",
   "startRange_sync": "Predeterminado",
   "startRange_rangeScope": "Todo en el rango",
   "startRange_today": "Hoy",
@@ -280,3 +282,4 @@
     "dateIntervalExtend": "Agregar pasos futuros (+) o pasados (-) desde hoy",
     "dateIntervalToday": "Hoy +/- "
 }
+

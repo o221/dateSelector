@@ -428,6 +428,11 @@
                     "type": {
                         "bool": true
                     }
+                },
+                "hideIfCurrent": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         },

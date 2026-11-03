@@ -80,6 +80,7 @@ export interface Settings {
     startupRangeSettings?: {
       showStartupRangeButton?: boolean;
       showStartIconText?: boolean;
+      hideIfCurrent?: boolean;
     };
   };
   period?: {
@@ -148,6 +149,7 @@ export interface dateCardProps {
   forceStartRange?: boolean;
   showStartupRangeButton?: boolean;
   showStartIconText?: boolean;
+  hideIfCurrent?: boolean;
   disableRefreshButton?: boolean; // deprecated alias retained for backward compatibility
 
   // boolean value indicating whether to display step controls for selecting dates

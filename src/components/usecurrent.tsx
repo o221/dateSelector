@@ -32,7 +32,17 @@ export default function UseCurrent(props: dateCardProps) {
     startupFilter,
     startRange,
     showStartupRangeButton,
+    hideIfCurrent,
   } = props;
+
+  React.useEffect(() => {
+    console.log("[UseCurrent] Props received:", {
+      showStartupRangeButton,
+      startupFilter,
+      showStartIconText,
+      hideIfCurrent,
+    });
+  }, [showStartupRangeButton, startupFilter, showStartIconText, hideIfCurrent]);
 
   const fallbackLocalization = useLocalization();
   const i18n = localization ?? fallbackLocalization;
@@ -179,7 +189,19 @@ export default function UseCurrent(props: dateCardProps) {
   const [ttl, setTtl] = React.useState(true);
 
   const startupRangeButton = React.useMemo(() => {
+    console.log(
+      "[UseCurrent] startupRangeButton useMemo - showStartupRangeButton:",
+      showStartupRangeButton,
+      "startupFilter:",
+      startupFilter,
+      "hideIfCurrent:",
+      hideIfCurrent,
+    );
+
     if (!showStartupRangeButton || !startupFilter) {
+      console.log(
+        "[UseCurrent] startupRangeButton returning null because showStartupRangeButton or startupFilter is missing",
+      );
       return null;
     }
 
@@ -188,7 +210,8 @@ export default function UseCurrent(props: dateCardProps) {
         item.thisRange && isSameRangeByLocalDay(item.thisRange, startupFilter),
     );
 
-    if (alreadyPresent) {
+    if (alreadyPresent && hideIfCurrent) {
+      console.log("[UseCurrent] startupRangeButton already present and hideIfCurrent is ON, returning null");
       return null;
     }
 
@@ -205,6 +228,12 @@ export default function UseCurrent(props: dateCardProps) {
     const isSelected = !!(dates && isSameRangeByLocalDay(dates, startupFilter));
     const rangeDescription = buttonLabel;
     const tooltipRangeText = `${format(startupFilter.start, "yyyy-MM-dd")} - ${format(startupFilter.end, "yyyy-MM-dd")}`;
+
+    console.log("[UseCurrent] startupRangeButton built successfully", {
+      buttonLabel,
+      isSelected,
+      rangeDescription,
+    });
 
     return {
       menu: "startupRange",
@@ -230,6 +259,7 @@ export default function UseCurrent(props: dateCardProps) {
     safeStepValue,
     startRange,
     dates,
+    hideIfCurrent,
   ]);
 
   const currentItems = React.useMemo(() => {
@@ -253,9 +283,14 @@ export default function UseCurrent(props: dateCardProps) {
   const visibleItems = React.useMemo(() => {
     const items = safeShowCurrent ? currentItems : [];
     // Startup range button is shown independently of safeShowCurrent
-    return startupRangeButton
-      ? [startupRangeButton, ...items]
-      : items;
+    const result = startupRangeButton ? [startupRangeButton, ...items] : items;
+    console.log("[UseCurrent] visibleItems updated:", {
+      startupRangeButton,
+      itemCount: result.length,
+      safeShowCurrent,
+      currentItemsCount: currentItems.length,
+    });
+    return result;
   }, [currentItems, startupRangeButton, safeShowCurrent]);
 
   /*
@@ -313,6 +348,10 @@ export default function UseCurrent(props: dateCardProps) {
    */
 
   if (!safeShowCurrent && !startupRangeButton) {
+    console.log("[UseCurrent] Early return - both hidden:", {
+      safeShowCurrent,
+      startupRangeButton,
+    });
     return null;
   }
 
@@ -327,6 +366,12 @@ export default function UseCurrent(props: dateCardProps) {
       }}
     >
       {visibleItems.map((item: any, index: number) => {
+        const isStartupRangeButton = item.menu === "startupRange";
+        console.log(`[UseCurrent] Rendering item ${index}:`, {
+          menu: item.menu,
+          isStartupRangeButton,
+          tip: item.tip,
+        });
         const selectedRange: dateRange | null = item.thisRange
           ? {
               start: item.thisRange.start,
@@ -342,7 +387,6 @@ export default function UseCurrent(props: dateCardProps) {
           dates &&
           isSameRangeByLocalDay(dates, selectedComparableRange)
         );
-        const isStartupRangeButton = item.menu === "startupRange";
         const effectiveSelected = isStartupRangeButton
           ? (item.isSelected ?? isSelected)
           : isSelected;

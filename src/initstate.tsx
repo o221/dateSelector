@@ -40,6 +40,7 @@ export const defaultSettings = {
     startupRangeSettings: {
       showStartupRangeButton: false,
       showStartIconText: false,
+      hideIfCurrent: true,
     },
     currentSettings: {
       showCurrent: true,
