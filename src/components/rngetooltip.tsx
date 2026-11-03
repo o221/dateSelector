@@ -50,6 +50,10 @@ const RngeTooltip: React.FC<RngeTooltipProps> = ({
     return children;
   }
 
+  const tooltipChild = React.isValidElement<{ [key: string]: unknown }>(children)
+    ? React.cloneElement(children, children.props)
+    : children;
+
   return (
     <Tooltip
       enterDelay={1000}
@@ -76,11 +80,11 @@ const RngeTooltip: React.FC<RngeTooltipProps> = ({
               backgroundColor: theme.palette.background.paper,
             },
           }),
-        }
+        },
       }}
       {...tooltipProps}
     >
-      {children}
+      {tooltipChild}
     </Tooltip>
   );
 };

@@ -7,7 +7,15 @@ All notable changes to this project are documented in this file.
 ### User-visible changes
 
 - Added capability setting to Range Options to activate immediate date selection on update.
-- Updated current-period toggle buttons' styling to indicate selected state.
+- Updated current-period buttons' styling to indicate selected state.
+- Added ability to show startup icon to reset the date selection to initialised range.
+  - The startup icon respects the current theme and localization settings.
+  - The startup icon can be configured to appear only when the current selection differs from the initialised range.
+  - The startup icon supports optional text label.
+
+### Internal tech changes
+
+- Refactored the layout for date ranges to improve consistency across different browsers.
 
 ## [3.2026.9.9] - 2026-09-09
 

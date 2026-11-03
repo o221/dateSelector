@@ -4,7 +4,7 @@ import Badge from "@mui/material/Badge";
 import ToggleButton from "@mui/material/ToggleButton";
 import Typography from "@mui/material/Typography";
 import { endOfDay, format, startOfDay } from "date-fns";
-import LinearScale from "@mui/icons-material/LinearScale";
+import EventRepeat from "@mui/icons-material/EventRepeat";
 
 import { dateCardProps, dateRange } from "../interface";
 import RngeTooltip from "./rngetooltip";
@@ -34,7 +34,6 @@ export default function UseCurrent(props: dateCardProps) {
     showStartupRangeButton,
     hideIfCurrent,
   } = props;
-
 
   const fallbackLocalization = useLocalization();
   const i18n = localization ?? fallbackLocalization;
@@ -213,11 +212,11 @@ export default function UseCurrent(props: dateCardProps) {
     const rangeDescription = buttonLabel;
     const tooltipRangeText = `${format(startupFilter.start, "yyyy-MM-dd")} - ${format(startupFilter.end, "yyyy-MM-dd")}`;
 
-    console.log("[UseCurrent] startupRangeButton built successfully", {
-      buttonLabel,
-      isSelected,
-      rangeDescription,
-    });
+    // console.log("[UseCurrent] startupRangeButton built successfully", {
+    //   buttonLabel,
+    //   isSelected,
+    //   rangeDescription,
+    // });
 
     return {
       menu: "startupRange",
@@ -227,7 +226,7 @@ export default function UseCurrent(props: dateCardProps) {
       show: true,
       thisPeriod: rangeDescription,
       thisRange: startupFilter,
-      icon: <LinearScale style={{ fontSize: "inherit" }} color="primary" />,
+      icon: <EventRepeat style={{ fontSize: "inherit" }} color="primary" />,
       isSelected,
       tooltipText: isSelected
         ? rangeDescription
@@ -268,12 +267,12 @@ export default function UseCurrent(props: dateCardProps) {
     const items = safeShowCurrent ? currentItems : [];
     // Startup range button is shown independently of safeShowCurrent
     const result = startupRangeButton ? [startupRangeButton, ...items] : items;
-    console.log("[UseCurrent] visibleItems updated:", {
-      startupRangeButton,
-      itemCount: result.length,
-      safeShowCurrent,
-      currentItemsCount: currentItems.length,
-    });
+    // console.log("[UseCurrent] visibleItems updated:", {
+    //   startupRangeButton,
+    //   itemCount: result.length,
+    //   safeShowCurrent,
+    //   currentItemsCount: currentItems.length,
+    // });
     return result;
   }, [currentItems, startupRangeButton, safeShowCurrent]);
 
@@ -332,10 +331,10 @@ export default function UseCurrent(props: dateCardProps) {
    */
 
   if (!safeShowCurrent && !startupRangeButton) {
-    console.log("[UseCurrent] Early return - both hidden:", {
-      safeShowCurrent,
-      startupRangeButton,
-    });
+    // console.log("[UseCurrent] Early return - both hidden:", {
+    //   safeShowCurrent,
+    //   startupRangeButton,
+    // });
     return null;
   }
 
@@ -351,11 +350,11 @@ export default function UseCurrent(props: dateCardProps) {
     >
       {visibleItems.map((item: any, index: number) => {
         const isStartupRangeButton = item.menu === "startupRange";
-        console.log(`[UseCurrent] Rendering item ${index}:`, {
-          menu: item.menu,
-          isStartupRangeButton,
-          tip: item.tip,
-        });
+        // console.log(`[UseCurrent] Rendering item ${index}:`, {
+        //   menu: item.menu,
+        //   isStartupRangeButton,
+        //   tip: item.tip,
+        // });
         const selectedRange: dateRange | null = item.thisRange
           ? {
               start: item.thisRange.start,
