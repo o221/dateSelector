@@ -4,7 +4,7 @@ import Badge from "@mui/material/Badge";
 import ToggleButton from "@mui/material/ToggleButton";
 import Typography from "@mui/material/Typography";
 import { endOfDay, format, startOfDay } from "date-fns";
-import LinearScale from "@mui/icons-material/EventAvailable";
+import LinearScale from "@mui/icons-material/LinearScale";
 
 import { dateCardProps, dateRange } from "../interface";
 import RngeTooltip from "./rngetooltip";
@@ -35,14 +35,6 @@ export default function UseCurrent(props: dateCardProps) {
     hideIfCurrent,
   } = props;
 
-  React.useEffect(() => {
-    console.log("[UseCurrent] Props received:", {
-      showStartupRangeButton,
-      startupFilter,
-      showStartIconText,
-      hideIfCurrent,
-    });
-  }, [showStartupRangeButton, startupFilter, showStartIconText, hideIfCurrent]);
 
   const fallbackLocalization = useLocalization();
   const i18n = localization ?? fallbackLocalization;
@@ -173,7 +165,12 @@ export default function UseCurrent(props: dateCardProps) {
       currentPeriodLabelEnabled || startupPeriodLabelEnabled
         ? clamp(labelFontSize * 0.35, 3, 6)
         : 0,
-    [clamp, currentPeriodLabelEnabled, labelFontSize, startupPeriodLabelEnabled],
+    [
+      clamp,
+      currentPeriodLabelEnabled,
+      labelFontSize,
+      startupPeriodLabelEnabled,
+    ],
   );
 
   /*
@@ -189,19 +186,7 @@ export default function UseCurrent(props: dateCardProps) {
   const [ttl, setTtl] = React.useState(true);
 
   const startupRangeButton = React.useMemo(() => {
-    console.log(
-      "[UseCurrent] startupRangeButton useMemo - showStartupRangeButton:",
-      showStartupRangeButton,
-      "startupFilter:",
-      startupFilter,
-      "hideIfCurrent:",
-      hideIfCurrent,
-    );
-
     if (!showStartupRangeButton || !startupFilter) {
-      console.log(
-        "[UseCurrent] startupRangeButton returning null because showStartupRangeButton or startupFilter is missing",
-      );
       return null;
     }
 
@@ -211,7 +196,6 @@ export default function UseCurrent(props: dateCardProps) {
     );
 
     if (alreadyPresent && hideIfCurrent) {
-      console.log("[UseCurrent] startupRangeButton already present and hideIfCurrent is ON, returning null");
       return null;
     }
 

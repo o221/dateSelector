@@ -234,10 +234,6 @@ export class DateSelector extends ReactVisual implements IVisual {
           dates: this.currentFilter,
           landingOff: true,
         };
-        console.log("[dateSelector] Passing props to React (shouldApplyFilter case):", {
-          showStartupRangeButton: propsToPass.showStartupRangeButton,
-          showStartIconText: propsToPass.showStartIconText,
-        });
         this.updateReactContainers(propsToPass);
 
         this.initialLoadComplete = true;
@@ -252,10 +248,6 @@ export class DateSelector extends ReactVisual implements IVisual {
         dates: this.currentFilter,
         landingOff: true,
       };
-      console.log("[dateSelector] Passing props to React (normal case):", {
-        showStartupRangeButton: propsToPass2.showStartupRangeButton,
-        showStartIconText: propsToPass2.showStartIconText,
-      });
       this.updateReactContainers(propsToPass2);
 
       this.initialLoadComplete = true;
@@ -323,11 +315,6 @@ export class DateSelector extends ReactVisual implements IVisual {
         this.formattingSettings,
         this.initialLoadComplete,
       );
-
-      console.log("[dateSelector] New visual state:", {
-        showStartupRangeButton: newVisualState.settings?.showStartupRangeButton,
-        showStartIconText: newVisualState.settings?.showStartIconText,
-      });
 
       this.state = {
         ...this.state,
