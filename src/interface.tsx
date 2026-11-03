@@ -53,28 +53,33 @@ export interface Settings {
     payLength?: number;
     fmtDate?: string;
     forceStartRange?: boolean;
+    disableRefreshButton?: boolean; // deprecated alias retained for backward compatibility
   };
   layout?: {
-    timelineSettings: {
+    timelineSettings?: {
       enableSlider?: boolean;
       showSlider?: boolean;
       show2ndSlider?: boolean;
     };
-    currentSettings: {
+    currentSettings?: {
       showCurrent?: boolean;
       showIconText?: boolean;
       scaleIconText?: boolean;
       showMore?: boolean;
       showCurrentInScopeOnly?: boolean;
     };
-    moveSettings: {
+    moveSettings?: {
       showMove?: boolean;
       showExpand?: boolean;
     };
-    helpSettings: {
+    helpSettings?: {
       showTooltip?: boolean;
       showHelpIcon?: boolean;
       showExtendedTooltip?: boolean;
+    };
+    startupRangeSettings?: {
+      showStartupRangeButton?: boolean;
+      showStartIconText?: boolean;
     };
   };
   period?: {
@@ -141,6 +146,9 @@ export interface dateCardProps {
   // date range object representing the initial filter state
   startupFilter?: dateRange;
   forceStartRange?: boolean;
+  showStartupRangeButton?: boolean;
+  showStartIconText?: boolean;
+  disableRefreshButton?: boolean; // deprecated alias retained for backward compatibility
 
   // boolean value indicating whether to display step controls for selecting dates
   stepViz?: step<boolean>;

@@ -38,6 +38,7 @@ export class DateSelector extends ReactVisual implements IVisual {
   private localizationManager!: ILocalizationManager;
   private formattingSettings!: VisualSettingsModel;
   private formattingSettingsService!: FormattingSettingsService;
+  private lastFormattingSettings: VisualSettingsModel | null = null;
   private dataView: DataView | null = null;
   private colorPalette!: IColorPalette;
   private colorHelper!: ColorHelper;
@@ -180,9 +181,8 @@ export class DateSelector extends ReactVisual implements IVisual {
       const shouldGetSettings = !isEqual(options.dataViews[0], this.dataView);
       this.dataView = options.dataViews[0];
 
-      if (shouldGetSettings || !this.dataView) {
-        this.loadVisualSettings(options);
-      }
+      // Always try to load formatting settings; the service will update them from options
+      this.loadVisualSettings(options);
 
       // 3. SET LANDING PAGE SWITCH
       this.state.landingOff = true;

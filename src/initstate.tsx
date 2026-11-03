@@ -29,12 +29,17 @@ export const defaultSettings = {
     limitToScope: false,
     applyOnDateSelect: false,
     forceStartRange: false,
+    disableRefreshButton: false,
   },
   layout: {
     timelineSettings: {
       enableSlider: true,
       showSlider: false,
       show2ndSlider: true,
+    },
+    startupRangeSettings: {
+      showStartupRangeButton: false,
+      showStartIconText: false,
     },
     currentSettings: {
       showCurrent: true,
@@ -106,6 +111,14 @@ const {
   yearSettings,
 } = period;
 
+const {
+  timelineSettings,
+  currentSettings,
+  moveSettings,
+  helpSettings,
+  startupRangeSettings,
+} = layout;
+
 export const initialState: dateCardProps = {
   landingOff: general.landingOff,
   rangeScope: general.rangeScope as unknown as dateCardProps["rangeScope"],
@@ -149,17 +162,19 @@ export const initialState: dateCardProps = {
   themeFont: style.themeFont,
   themeMode: style.themeMode,
   fontSize: style.fontSize,
-  showCurrent: layout.currentSettings.showCurrent,
-  showHelpIcon: layout.helpSettings.showHelpIcon,
-  showMore: layout.currentSettings.showMore,
-  showIconText: layout.currentSettings.showIconText,
-  scaleIconText: layout.currentSettings.scaleIconText,
-  showCurrentInScopeOnly: layout.currentSettings.showCurrentInScopeOnly,
+  showCurrent: currentSettings.showCurrent,
+  showHelpIcon: helpSettings.showHelpIcon,
+  showMore: currentSettings.showMore,
+  showIconText: currentSettings.showIconText,
+  scaleIconText: currentSettings.scaleIconText,
+  showCurrentInScopeOnly: currentSettings.showCurrentInScopeOnly,
+  showStartupRangeButton: startupRangeSettings.showStartupRangeButton,
+  showStartIconText: startupRangeSettings.showStartIconText,
   singleDay: calendar.singleDay,
   applyOnDateSelect: calendar.applyOnDateSelect,
-  enableSlider: layout.timelineSettings.enableSlider,
-  showSlider: layout.timelineSettings.showSlider,
-  show2ndSlider: layout.timelineSettings.show2ndSlider,
-  showMove: layout.moveSettings.showMove,
-  showExpand: layout.moveSettings.showExpand,
+  enableSlider: timelineSettings.enableSlider,
+  showSlider: timelineSettings.showSlider,
+  show2ndSlider: timelineSettings.show2ndSlider,
+  showMove: moveSettings.showMove,
+  showExpand: moveSettings.showExpand,
 };

@@ -2,8 +2,6 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import RefreshIcon from "@mui/icons-material/Refresh";
-// import Remove from "@mui/icons-material/Remove";
 import { useTheme } from "@mui/material/styles";
 import { format, parse, isValid, isEqual, isWithinInterval } from "date-fns";
 
@@ -16,7 +14,6 @@ import { useDateFnsLocale, useLocalization } from "../localeutils";
 import HorizontalRule from "@mui/icons-material/HorizontalRule";
 import LinearScale from "@mui/icons-material/LinearScale";
 import Badge from "@mui/material/Badge";
-import { styled } from "@mui/material/styles";
 
 // DateRange input with optional reset.
 // Uses the sync value if available; otherwise falls back to preset startup filter or scope.
@@ -31,6 +28,8 @@ const DateRange = (props: dateCardProps) => {
     startupFilter,
     startRange,
     localization,
+    showStartupRangeButton = false,
+    disableRefreshButton = false,
   } = props;
   const fallbackLocalization = useLocalization();
   const i18n = localization ?? fallbackLocalization;
@@ -45,11 +44,58 @@ const DateRange = (props: dateCardProps) => {
   const theme = useTheme();
   const { showExtendedTooltip } = useHelpContext();
 
-  const tipDesc = `startRange_${startRange ?? ""}`;
-  const tipDescription =
-    i18n.getDisplayName(tipDesc) && i18n.getDisplayName(tipDesc) !== tipDesc
-      ? i18n.getDisplayName(tipDesc)
-      : "Start Range";
+  const getRangeLabel = React.useCallback(
+    (value?: string): string => {
+      const rawKey = value
+        ? `startRange_${value}`
+        : "calendar_startRange_displayName";
+      const label = i18n.getDisplayName(rawKey);
+      if (label && label !== rawKey) {
+        return label;
+      }
+      return (
+        i18n.getDisplayName("calendar_startRange_displayName") || "Start Range"
+      );
+    },
+    [i18n],
+  );
+
+  const startupRangeText = startupFilter
+    ? (() => {
+        const startLabel = format(startupFilter.start, "yyyy-MM-dd", {
+          locale,
+        });
+        const endLabel = format(startupFilter.end, "yyyy-MM-dd", { locale });
+        return startLabel === endLabel
+          ? startLabel
+          : `${startLabel} - ${endLabel}`;
+      })()
+    : "";
+
+  const isStartupSelected =
+    !!startupFilter &&
+    isEqual(safeDates.start, startupFilter.start) &&
+    isEqual(safeDates.end, startupFilter.end);
+
+  const canReset =
+    !!startupFilter &&
+    !isStartupSelected &&
+    (!isEqual(safeDates.start, startupFilter.start) ||
+      !isEqual(safeDates.end, startupFilter.end));
+
+  const tipDescription = getRangeLabel(startRange);
+  const startRangeTooltip = isStartupSelected
+    ? tipDescription
+    : canReset
+      ? `${i18n.getDisplayName("dateRangeResetTo")} ${tipDescription}`
+      : tipDescription;
+
+  const startRangeButtonTooltip =
+    startupFilter && !isStartupSelected
+      ? `${i18n.getDisplayName("dateRangeResetTo")} ${startupRangeText || tipDescription}`
+      : startupFilter && isStartupSelected
+        ? startupRangeText || tipDescription
+        : tipDescription;
 
   const [startText, setStartText] = useState(() =>
     format(safeDates.start, "yyyy-MM-dd", { locale }),
@@ -140,13 +186,64 @@ const DateRange = (props: dateCardProps) => {
     doUpdate(e.target.id as "start" | "end", e.target.value);
   };
 
-  // 🔑 determine if reset is available
-  const canReset =
-    startupFilter &&
-    (!isEqual(safeDates.start, startupFilter.start) ||
-      !isEqual(safeDates.end, startupFilter.end));
+  // Final semantics from the clarified spec:
+  // 1) startup selected = passive disabled icon, no highlight
+  // 2) startup not selected = active reset icon with badge
+  // 3) dedicated startup button is handled separately in UseCurrent when enabled
+  // 4) the dedicated startup-range button owns the Startup Icon text; the in-between reset icon does not
+  const showResetButton = canReset;
+  const rangeIconText = startRangeTooltip || tipDescription;
 
-  const showRefresh = hovered && canReset;
+  const renderStartIcon = () => {
+    const iconButton = isStartupSelected ? (
+      <IconButton size="small" disabled>
+        <HorizontalRule
+          style={{ fontSize: theme.typography.fontSize }}
+          color="disabled"
+        />
+      </IconButton>
+    ) : showResetButton ? (
+      <IconButton
+        size="small"
+        onClick={() => (startupFilter ? handleDate(startupFilter) : undefined)}
+        aria-label={
+          startupFilter ? "Reset to startup range" : "No reset available"
+        }
+      >
+        <Badge
+          color="warning"
+          variant="dot"
+          badgeContent=" "
+          sx={{
+            "& .MuiBadge-dot": {
+              width: "4px !important",
+              height: "4px !important",
+              borderRadius: "50% !important",
+              right: 0,
+              top: 0,
+              minWidth: "2px !important",
+              minHeight: "2px !important",
+              padding: "0 !important",
+            },
+          }}
+        >
+          <LinearScale
+            style={{ fontSize: theme.typography.fontSize }}
+            color="success"
+          />
+        </Badge>
+      </IconButton>
+    ) : (
+      <IconButton size="small" disabled>
+        <HorizontalRule
+          style={{ fontSize: theme.typography.fontSize }}
+          color="disabled"
+        />
+      </IconButton>
+    );
+
+    return iconButton;
+  };
 
   // Always enforce scope min/max on the native date pickers (blocks out-of-scope
   // dates in the calendar overlay and constrains the day/month/year spinners).
@@ -206,54 +303,7 @@ const DateRange = (props: dateCardProps) => {
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              {showRefresh ? (
-                <IconButton
-                  size="small"
-                  onClick={() =>
-                    canReset && startupFilter
-                      ? handleDate(startupFilter)
-                      : undefined
-                  }
-                >
-                  <RefreshIcon
-                    style={{ fontSize: theme.typography.fontSize }}
-                  />
-                </IconButton>
-              ) : (
-                <IconButton size="small" disabled={!canReset}>
-                  {canReset ? (
-                    <Badge
-                      color="warning"
-                      variant="dot"
-                      badgeContent=" "
-                      sx={{
-                        // Use a CSS selector to target the dot class
-                        "& .MuiBadge-dot": {
-                          width: "4px !important",
-                          height: "4px !important",
-                          borderRadius: "50% !important",
-                          right: 0,
-                          top: 0,
-                          // Optional: Remove any minimum size constraints that might be overriding
-                          minWidth: "2px !important",
-                          minHeight: "2px !important",
-                          padding: "0 !important",
-                        },
-                      }}
-                    >
-                      <LinearScale
-                        style={{ fontSize: theme.typography.fontSize }}
-                        color={canReset ? "success" : "disabled"}
-                      ></LinearScale>
-                    </Badge>
-                  ) : (
-                    <HorizontalRule
-                      style={{ fontSize: theme.typography.fontSize }}
-                      color={canReset ? "success" : "disabled"}
-                    ></HorizontalRule>
-                  )}{" "}
-                </IconButton>
-              )}
+              {renderStartIcon()}
             </span>
           </RngeTooltip>
 

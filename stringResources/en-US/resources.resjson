@@ -1,5 +1,5 @@
 {
-  "language": "en-AU",
+  "language": "en-US",
   "style_description": "Visual font color and theme.",
   "style_displayName": "Style",
   "style_themeFont_description": "Font for text on this slicer",
@@ -174,6 +174,10 @@
   "fmtDate_MDY": "MMM d yy",
   "calendar_forceStartRange_description": "Force the startup date to activate rather than using the saved state for the initial date range.",
   "calendar_forceStartRange_displayName": "Force Startup Range",
+  "calendar_showStartupRangeButton_description": "Show a dedicated reset-to-startup button beside the date inputs when the range differs from the startup range.",
+  "calendar_showStartupRangeButton_displayName": "Startup Range Icon",
+  "calendar_disableRefreshButton_description": "Control the start/reset icon shown between the dates when the selected range differs from the startup range.",
+  "calendar_disableRefreshButton_displayName": "Startup Icon Text",
   "startRange_sync": "Default",
   "startRange_rangeScope": "All in Scope",
   "startRange_today": "Today",

@@ -1,8 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import Badge from "@mui/material/Badge";
 import ToggleButton from "@mui/material/ToggleButton";
 import Typography from "@mui/material/Typography";
-import { endOfDay, startOfDay } from "date-fns";
+import { endOfDay, format, startOfDay } from "date-fns";
+import LinearScale from "@mui/icons-material/EventAvailable";
 
 import { dateCardProps, dateRange } from "../interface";
 import RngeTooltip from "./rngetooltip";
@@ -16,6 +18,7 @@ export default function UseCurrent(props: dateCardProps) {
     showMore,
     showCurrent,
     showIconText,
+    showStartIconText,
     scaleIconText,
     showCurrentInScopeOnly,
     current,
@@ -26,6 +29,9 @@ export default function UseCurrent(props: dateCardProps) {
     handleVal,
     handleStep,
     localization,
+    startupFilter,
+    startRange,
+    showStartupRangeButton,
   } = props;
 
   const fallbackLocalization = useLocalization();
@@ -48,8 +54,12 @@ export default function UseCurrent(props: dateCardProps) {
   const safeCurrent = current ?? [];
   const safeShowCurrent = showCurrent ?? false;
   const safeShowIconText = showIconText ?? false;
+  const safeShowStartIconText = showStartIconText ?? false;
   const safeScaleIconText = scaleIconText ?? false;
   const safeShowCurrentInScopeOnly = showCurrentInScopeOnly ?? true;
+
+  const currentPeriodLabelEnabled = safeShowIconText;
+  const startupPeriodLabelEnabled = safeShowStartIconText;
 
   const toDate = React.useCallback((value: unknown): Date | null => {
     if (value instanceof Date) {
@@ -133,7 +143,7 @@ export default function UseCurrent(props: dateCardProps) {
    * of which MUI icon is supplied.
    */
   const iconSize = React.useMemo(
-    () => (safeScaleIconText ? clamp(themeFontSize * 1.2, 12, 24) : 16),
+    () => (safeScaleIconText ? clamp(themeFontSize * 1.2, 12, 24) : 18),
     [clamp, safeScaleIconText, themeFontSize],
   );
 
@@ -149,8 +159,11 @@ export default function UseCurrent(props: dateCardProps) {
    * Gap between icon and its label.
    */
   const iconTextGap = React.useMemo(
-    () => (safeShowIconText ? clamp(labelFontSize * 0.35, 3, 6) : 0),
-    [clamp, labelFontSize, safeShowIconText],
+    () =>
+      currentPeriodLabelEnabled || startupPeriodLabelEnabled
+        ? clamp(labelFontSize * 0.35, 3, 6)
+        : 0,
+    [clamp, currentPeriodLabelEnabled, labelFontSize, startupPeriodLabelEnabled],
   );
 
   /*
@@ -159,11 +172,91 @@ export default function UseCurrent(props: dateCardProps) {
    * This is intentionally independent of the icon/text gap.
    */
   const controlGap = React.useMemo(
-    () => (safeShowIconText ? 2 : 0),
-    [safeShowIconText],
+    () => (currentPeriodLabelEnabled || startupPeriodLabelEnabled ? 2 : 0),
+    [currentPeriodLabelEnabled, startupPeriodLabelEnabled],
   );
 
   const [ttl, setTtl] = React.useState(true);
+
+  const startupRangeButton = React.useMemo(() => {
+    if (!showStartupRangeButton || !startupFilter) {
+      return null;
+    }
+
+    const alreadyPresent = safeCurrent.some(
+      (item: any) =>
+        item.thisRange && isSameRangeByLocalDay(item.thisRange, startupFilter),
+    );
+
+    if (alreadyPresent) {
+      return null;
+    }
+
+    const fallbackRangeLabel =
+      i18n.getDisplayName("calendar_startRange_displayName") ||
+      i18n.getDisplayName("startRange_sync") ||
+      "Start Range";
+
+    const buttonLabel =
+      startRange && startRange !== "custom"
+        ? i18n.getDisplayName(`startRange_${startRange}`) || fallbackRangeLabel
+        : fallbackRangeLabel;
+
+    const isSelected = !!(dates && isSameRangeByLocalDay(dates, startupFilter));
+    const rangeDescription = buttonLabel;
+    const tooltipRangeText = `${format(startupFilter.start, "yyyy-MM-dd")} - ${format(startupFilter.end, "yyyy-MM-dd")}`;
+
+    return {
+      menu: "startupRange",
+      tip: buttonLabel,
+      plural: buttonLabel,
+      step: safeStepValue,
+      show: true,
+      thisPeriod: rangeDescription,
+      thisRange: startupFilter,
+      icon: <LinearScale style={{ fontSize: "inherit" }} color="primary" />,
+      isSelected,
+      tooltipText: isSelected
+        ? rangeDescription
+        : `${i18n.getDisplayName("dateRangeResetTo")} ${rangeDescription}`,
+      detailText: tooltipRangeText,
+    };
+  }, [
+    showStartupRangeButton,
+    startupFilter,
+    safeCurrent,
+    i18n,
+    isSameRangeByLocalDay,
+    safeStepValue,
+    startRange,
+    dates,
+  ]);
+
+  const currentItems = React.useMemo(() => {
+    const visible = safeCurrent.filter((item: any) => {
+      if (item.thisRange !== null) {
+        const showItem = ttl ? item.menu !== "2" : item.menu === "2";
+
+        const withinScope = safeShowCurrentInScopeOnly
+          ? isRangeFullyContainedInScope(item.thisRange, normalizedScope)
+          : true;
+
+        return item.show && showItem && withinScope;
+      }
+
+      return showMore;
+    });
+
+    return visible;
+  }, [safeCurrent, safeShowCurrentInScopeOnly, normalizedScope, ttl, showMore]);
+
+  const visibleItems = React.useMemo(() => {
+    const items = safeShowCurrent ? currentItems : [];
+    // Startup range button is shown independently of safeShowCurrent
+    return startupRangeButton
+      ? [startupRangeButton, ...items]
+      : items;
+  }, [currentItems, startupRangeButton, safeShowCurrent]);
 
   /*
    * --------------------------------------------------------------------------
@@ -191,6 +284,24 @@ export default function UseCurrent(props: dateCardProps) {
     [handleStep],
   );
 
+  const formatToolTipRange = React.useCallback(
+    (range?: dateRange | null) => {
+      if (!range) {
+        return undefined;
+      }
+
+      const start = toDate(range.start);
+      const end = toDate(range.end);
+
+      if (!start || !end) {
+        return undefined;
+      }
+
+      return `${format(start, "yyyy-MM-dd")} - ${format(end, "yyyy-MM-dd")}`;
+    },
+    [toDate],
+  );
+
   const toggleTtl = React.useCallback(() => {
     setTtl((prev) => !prev);
   }, []);
@@ -201,7 +312,7 @@ export default function UseCurrent(props: dateCardProps) {
    * --------------------------------------------------------------------------
    */
 
-  if (!safeShowCurrent) {
+  if (!safeShowCurrent && !startupRangeButton) {
     return null;
   }
 
@@ -209,167 +320,196 @@ export default function UseCurrent(props: dateCardProps) {
     <Box
       sx={{
         pl: 0,
-
-        /*
-         * The controls are independent items rather than a MUI ButtonGroup.
-         *
-         * This allows the browser to determine each item's natural width
-         * from its actual contents.
-         */
         display: "inline-flex",
         alignItems: "center",
         gap: `${controlGap}px`,
-
-        /*
-         * Prevent the collection itself from introducing unexpected wrapping.
-         */
         whiteSpace: "nowrap",
       }}
     >
-      {safeCurrent
-        .filter((item: any) => {
-          if (item.thisRange !== null) {
-            const showItem = ttl ? item.menu !== "2" : item.menu === "2";
+      {visibleItems.map((item: any, index: number) => {
+        const selectedRange: dateRange | null = item.thisRange
+          ? {
+              start: item.thisRange.start,
+              end: singleDay ? item.thisRange.start : item.thisRange.end,
+            }
+          : null;
+        const selectedComparableRange =
+          selectedRange && props.limitToScope
+            ? clampRangeToScope(selectedRange, normalizedScope)
+            : selectedRange;
+        const isSelected = !!(
+          selectedComparableRange &&
+          dates &&
+          isSameRangeByLocalDay(dates, selectedComparableRange)
+        );
+        const isStartupRangeButton = item.menu === "startupRange";
+        const effectiveSelected = isStartupRangeButton
+          ? (item.isSelected ?? isSelected)
+          : isSelected;
+        const shouldShowButtonText = isStartupRangeButton
+          ? startupPeriodLabelEnabled
+          : currentPeriodLabelEnabled;
+        const buttonLabel = item.thisPeriod ?? item.tip;
 
-            const withinScope = safeShowCurrentInScopeOnly
-              ? isRangeFullyContainedInScope(item.thisRange, normalizedScope)
-              : true;
-
-            return item.show && showItem && withinScope;
-          }
-
-          return showMore;
-        })
-        .map((item: any, index: number) => {
-          const selectedRange: dateRange | null = item.thisRange
-            ? {
-                start: item.thisRange.start,
-                end: singleDay ? item.thisRange.start : item.thisRange.end,
+        const buttonContents = (
+          <ToggleButton
+            size="small"
+            color="primary"
+            selected={effectiveSelected}
+            value={item.tip.toLowerCase().trim()}
+            onClick={() => {
+              if (item.thisRange) {
+                handleDate(item.thisRange);
+                handleStepChange(item.step);
+              } else {
+                toggleTtl();
               }
-            : null;
-          const selectedComparableRange =
-            selectedRange && props.limitToScope
-              ? clampRangeToScope(selectedRange, normalizedScope)
-              : selectedRange;
-          const isSelected = !!(
-            selectedComparableRange &&
-            dates &&
-            isSameRangeByLocalDay(dates, selectedComparableRange)
-          );
-
-          return (
-            <DateIntervalPicker
-              handleVal={handleDate}
-              item={item}
-              key={`dip${item.thisRange}${index}`}
-              localization={i18n}
+            }}
+            sx={{
+              minWidth: 0,
+              p: `${controlPadding}px`,
+              textTransform: "none",
+              borderRadius: "5px",
+              border: 0,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              whiteSpace: "nowrap",
+              color: "inherit",
+              backgroundColor: "transparent",
+              "&.Mui-selected": {
+                border: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.04)",
+              },
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: `${iconTextGap}px`,
+                lineHeight: 1,
+                whiteSpace: "nowrap",
+              }}
             >
-              <RngeTooltip
-                title={undefined}
-                key={`rtt${item.thisRange}${index}`}
-                detailRow={
-                  item.menu !== "2" && item.menu !== "12"
-                    ? `${i18n.getDisplayName(
-                        "useCurrentRightClick",
-                      )} [${item.plural}]`
-                    : ""
-                }
-                placement="bottom"
-                topRow={
-                  item.tip +
-                  (item.step === safeStepValue && item.menu !== "2"
-                    ? " (T)"
-                    : "")
-                }
+              <Box
+                sx={{
+                  width: isStartupRangeButton
+                    ? `${Math.max(iconSize, 18)}px`
+                    : `${iconSize}px`,
+                  height: isStartupRangeButton
+                    ? `${Math.max(iconSize, 18)}px`
+                    : `${iconSize}px`,
+                  flex: isStartupRangeButton
+                    ? `0 0 ${Math.max(iconSize, 18)}px`
+                    : `0 0 ${iconSize}px`,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  lineHeight: 1,
+                  color: "inherit",
+                  "& svg": {
+                    width: isStartupRangeButton
+                      ? `${Math.max(iconSize, 18)}px`
+                      : `${iconSize}px`,
+                    height: isStartupRangeButton
+                      ? `${Math.max(iconSize, 18)}px`
+                      : `${iconSize}px`,
+                    display: "block",
+                  },
+                }}
               >
-                <ToggleButton
-                  size="small"
-                  color="primary"
-                  selected={isSelected}
-                  value={item.tip.toLowerCase().trim()}
-                  onClick={() => {
-                    if (item.thisRange) {
-                      handleDate(item.thisRange);
-                      handleStepChange(item.step);
-                    } else {
-                      toggleTtl();
-                    }
-                  }}
+                {item.icon}
+              </Box>
+
+              {!isStartupRangeButton && currentPeriodLabelEnabled && (
+                <Typography
+                  component="span"
                   sx={{
-                    minWidth: 0,
-                    p: `${controlPadding}px`,
-                    textTransform: "none",
-                    borderRadius: "5px",
-                    border: 0,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    color: effectiveSelected ? "inherit" : "text.secondary",
+                    display: "inline-block",
+                    fontSize: `${labelFontSize}px`,
+                    lineHeight: 1,
                     whiteSpace: "nowrap",
-                    color: "inherit",
-                    "&.Mui-selected": {
-                      border: 1,
-                    },
+                    m: 0,
+                    p: 0,
+                    fontWeight: effectiveSelected ? 600 : 400,
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: `${iconTextGap}px`,
-                      lineHeight: 1,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: `${iconSize}px`,
-                        height: `${iconSize}px`,
-                        flex: `0 0 ${iconSize}px`,
+                  {buttonLabel}
+                </Typography>
+              )}
 
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+              {isStartupRangeButton && startupPeriodLabelEnabled && (
+                <Typography
+                  component="span"
+                  sx={{
+                    color: effectiveSelected ? "inherit" : "text.secondary",
+                    display: "inline-block",
+                    fontSize: `${labelFontSize}px`,
+                    lineHeight: 1,
+                    whiteSpace: "nowrap",
+                    m: 0,
+                    p: 0,
+                    fontWeight: effectiveSelected ? 600 : 400,
+                  }}
+                >
+                  {buttonLabel}
+                </Typography>
+              )}
+            </Box>
+          </ToggleButton>
+        );
 
-                        lineHeight: 1,
-                        color: "inherit",
+        const tooltip = isStartupRangeButton ? (
+          <RngeTooltip
+            key={`rtt${item.thisRange ?? item.menu}${index}`}
+            title={item.tooltipText ?? item.tip}
+            detailRow={
+              item.detailText ?? formatToolTipRange(item.thisRange) ?? undefined
+            }
+            placement="bottom"
+          >
+            {buttonContents}
+          </RngeTooltip>
+        ) : (
+          <DateIntervalPicker
+            handleVal={handleDate}
+            item={item}
+            key={`dip${item.thisRange ?? item.menu}${index}`}
+            localization={i18n}
+          >
+            <RngeTooltip
+              title={undefined}
+              key={`rtt${item.thisRange ?? item.menu}${index}`}
+              detailRow={
+                item.menu !== "2" && item.menu !== "12"
+                  ? `${i18n.getDisplayName("useCurrentRightClick")} [${item.plural}]`
+                  : ""
+              }
+              placement="bottom"
+              topRow={
+                item.tip +
+                (item.step === safeStepValue && item.menu !== "2" ? " (T)" : "")
+              }
+            >
+              {buttonContents}
+            </RngeTooltip>
+          </DateIntervalPicker>
+        );
 
-                        "& svg": {
-                          width: "100%",
-                          height: "100%",
-                          display: "block",
-                        },
-                      }}
-                    >
-                      {item.icon}
-                    </Box>
-
-                    {safeShowIconText && (
-                      <Typography
-                        component="span"
-                        sx={{
-                          color: isSelected ? "inherit" : "text.secondary",
-
-                          display: "inline-block",
-
-                          fontSize: `${labelFontSize}px`,
-                          lineHeight: 1,
-
-                          whiteSpace: "nowrap",
-
-                          m: 0,
-                          p: 0,
-                        }}
-                      >
-                        {item.thisPeriod}
-                      </Typography>
-                    )}
-                  </Box>
-                </ToggleButton>
-              </RngeTooltip>
-            </DateIntervalPicker>
-          );
-        })}
+        return (
+          <React.Fragment
+            key={`fragment${item.thisRange ?? item.menu}${index}`}
+          >
+            {tooltip}
+          </React.Fragment>
+        );
+      })}
     </Box>
   );
 }

@@ -351,6 +351,31 @@ class HelpSettings extends FormattingSettingsGroup {
   ];
 }
 
+class StartupRangeSettings extends FormattingSettingsGroup {
+  name: string = "startupRange";
+  descriptionKey = "calendar_showStartupRangeButton_description";
+  displayNameKey = "calendar_showStartupRangeButton_displayName";
+  analyticsPane: boolean = false;
+  uid: string = "startupRangeUid";
+
+  showStartupRangeButton = new formattingSettings.ToggleSwitch({
+    name: "showStartupRangeButton",
+    descriptionKey: "calendar_showStartupRangeButton_description",
+    displayNameKey: "calendar_showStartupRangeButton_displayName",
+    value: defaultSettings.layout?.startupRangeSettings?.showStartupRangeButton,
+  } as unknown as formattingSettings.ToggleSwitch);
+
+  showStartIconText = new formattingSettings.ToggleSwitch({
+    name: "showStartIconText",
+    descriptionKey: "calendar_disableRefreshButton_description",
+    displayNameKey: "calendar_disableRefreshButton_displayName",
+    value: defaultSettings.layout?.startupRangeSettings?.showStartIconText,
+  } as unknown as formattingSettings.ToggleSwitch);
+
+  topLevelSlice: formattingSettings.SimpleSlice = this.showStartupRangeButton;
+  slices: Array<FormattingSettingsSlice> = [this.showStartIconText];
+}
+
 class LayoutSettings extends FormattingSettingsCompositeCard {
   name: string = "layout";
   displayNameKey = "layout_displayName";
@@ -363,9 +388,11 @@ class LayoutSettings extends FormattingSettingsCompositeCard {
   layoutMove = new MoveSettings({ name: "move" });
   layoutCurrent = new CurrentSettings({ name: "current" });
   layoutHelp = new HelpSettings({ name: "tooltip" });
+  startupRange = new StartupRangeSettings({ name: "startupRange" });
 
   groups: Array<FormattingSettingsGroup> = [
     this.layoutCurrent,
+    this.startupRange,
     this.layoutMove,
     this.layoutTimeline,
     this.layoutHelp,

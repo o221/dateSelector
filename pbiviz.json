@@ -20,6 +20,10 @@
     "capabilities": "capabilities.json",
     "dependencies": null,
     "stringResources": [
-        "stringResources/en-US/resources.resjson"
+        "stringResources/en-US/resources.resjson",
+        "stringResources/en-AU/resources.resjson",
+        "stringResources/fr-FR/resources.resjson",
+        "stringResources/es-ES/resources.resjson",
+        "stringResources/nl-NL/resources.resjson"
     ]
 }

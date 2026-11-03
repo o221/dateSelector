@@ -418,6 +418,16 @@
                     "type": {
                         "bool": true
                     }
+                },
+                "showStartupRangeButton": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "showStartIconText": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         },

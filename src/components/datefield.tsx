@@ -66,8 +66,49 @@ export const DateField: React.FC<DateFieldProps> = (props) => {
   };
 
   const theme = useTheme();
+
+  const formatDateInputValue = (inputValue: string): string => {
+    if (!inputValue) {
+      return inputValue;
+    }
+
+    try {
+      const numericDate = new Date(`${inputValue}T00:00:00`);
+      if (Number.isNaN(numericDate.getTime())) {
+        return inputValue;
+      }
+
+      return new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+        .formatToParts(numericDate)
+        .map((part) => part.value)
+        .join("");
+    } catch {
+      return inputValue;
+    }
+  };
+
+  const formattedValue = formatDateInputValue(value);
+  const browserDateFormatHasSpaces = React.useMemo(() => {
+    try {
+      const dateParts = new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).formatToParts(new Date(2024, 0, 1));
+
+      return dateParts.some(
+        (part) => part.type === "literal" && /\s/.test(part.value),
+      );
+    } catch {
+      return false;
+    }
+  }, []);
   const textProperties: TextProperties = {
-    text: value,
+    text: formattedValue,
     fontFamily: theme.typography.fontFamily ?? "Segoe UI",
     fontSize: pixelConverter.toString(theme.typography.fontSize),
   };
@@ -97,7 +138,8 @@ export const DateField: React.FC<DateFieldProps> = (props) => {
         paddingTop: "2px",
         width:
           tms.measureSvgTextWidth(textProperties) +
-          theme.typography.fontSize * 3.25,
+          theme.typography.fontSize * 3.25 +
+          (browserDateFormatHasSpaces ? theme.typography.fontSize : 0),
       }}
       type="date"
       variant="standard"
