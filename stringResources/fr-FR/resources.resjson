@@ -34,6 +34,8 @@
   "calendar_singleDay_displayName": "Un jour seulement",
   "calendar_limitToScope_displayName": "Limiter à la portée",
   "calendar_limitToScope_description": "Restreindre la sélection des dates à la plage disponible.",
+  "calendar_applyOnDateSelect_displayName": "Appliquer au choix de date",
+  "calendar_applyOnDateSelect_description": "Appliquer immédiatement le filtre lorsqu'une date est choisie dans le sélecteur calendrier.",
   "timeline_description": "Configurer les options et paramètres de visibilité de la chronologie.",
   "timeline_displayName": "Chronologie",
   "timeline_enableSlider_description": "Afficher le bouton pour afficher ou masquer la chronologie",
@@ -172,6 +174,12 @@
   "fmtDate_MDY": "MMM j aa",
   "calendar_forceStartRange_description": "Force la date de démarrage à s'activer au lieu d'utiliser l'état enregistré pour la plage de dates initiale.",
   "calendar_forceStartRange_displayName": "Forcer la plage de démarrage",
+  "calendar_showStartupRangeButton_description": "Afficher un bouton dédié pour rétablir la plage de démarrage à côté des champs de date lorsque la plage diffère de la plage de démarrage.",
+  "calendar_showStartupRangeButton_displayName": "Afficher le bouton de plage de démarrage",
+  "calendar_disableRefreshButton_description": "Contrôler l'icône de départ/réinitialisation affichée entre les dates lorsque la plage sélectionnée diffère de la plage de démarrage.",
+  "calendar_disableRefreshButton_displayName": "Texte de l'icône de départ",
+  "calendar_hideIfCurrent_displayName": "Masquer si actuel",
+  "calendar_hideIfCurrent_description": "Masquer l'icône de plage de démarrage si elle correspond à un bouton de période actuelle existant.",
   "startRange_sync": "Par défaut",
   "startRange_rangeScope": "Tout dans la portée",
   "startRange_today": "Aujourd'hui",
@@ -275,3 +283,4 @@
   "dateIntervalExtend": "Ajouter des étapes futures (+) ou passées (-) à partir d'aujourd'hui",
   "dateIntervalToday": "Aujourd'hui +/- "
 }
+

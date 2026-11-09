@@ -500,11 +500,15 @@ const moveFns = {
 };
 
 export const getRange = (fn: string, step: string, dates: dateRange) => {
-  const [start, end] = moveFns[step]?.(dates)[fn];
-  if (isAfter(start, end)) {
-    return [end, start]; // normalize instead of reverting
+  const move = moveFns[step]?.(dates);
+  const next = move?.[fn];
+
+  if (!next || !Array.isArray(next) || next.length < 2) {
+    return [dates.start, dates.end];
   }
-  return [start, end];
+
+  const [start, end] = next;
+  return start <= end ? [start, end] : [end, start];
 };
 
 export const clampRangeToScope = (

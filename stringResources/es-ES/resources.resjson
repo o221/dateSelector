@@ -34,6 +34,8 @@
   "calendar_singleDay_displayName": "Solo un día",
   "calendar_limitToScope_displayName": "Limitar al rango",
   "calendar_limitToScope_description": "Restringir la selección de fechas al rango disponible.",
+  "calendar_applyOnDateSelect_displayName": "Aplicar al elegir fecha",
+  "calendar_applyOnDateSelect_description": "Aplicar el filtro inmediatamente al seleccionar una fecha desde el selector de calendario.",
   "timeline_description": "Configurar opciones y ajustes de visibilidad de la línea de tiempo.",
   "timeline_displayName": "Línea de tiempo",
   "timeline_enableSlider_description": "Mostrar el botón para mostrar u ocultar la línea de tiempo",
@@ -172,6 +174,12 @@
   "fmtDate_MDY": "MMM d aa",
   "calendar_forceStartRange_description": "Forzar que la fecha de inicio se active en lugar de usar el estado guardado para el rango de fechas inicial.",
   "calendar_forceStartRange_displayName": "Forzar rango de inicio",
+  "calendar_showStartupRangeButton_description": "Mostrar un botón dedicado para restablecer el rango de inicio junto a los campos de fecha cuando el rango difiere del rango de inicio.",
+  "calendar_showStartupRangeButton_displayName": "Mostrar botón de rango de inicio",
+  "calendar_disableRefreshButton_description": "Controlar el icono de inicio/restablecimiento mostrado entre las fechas cuando el rango seleccionado difiere del rango de inicio.",
+  "calendar_disableRefreshButton_displayName": "Texto del icono de inicio",
+  "calendar_hideIfCurrent_displayName": "Ocultar si está vigente",
+  "calendar_hideIfCurrent_description": "Ocultar el icono de rango de inicio si coincide con un botón de período actual existente.",
   "startRange_sync": "Predeterminado",
   "startRange_rangeScope": "Todo en el rango",
   "startRange_today": "Hoy",
@@ -274,3 +282,4 @@
     "dateIntervalExtend": "Agregar pasos futuros (+) o pasados (-) desde hoy",
     "dateIntervalToday": "Hoy +/- "
 }
+

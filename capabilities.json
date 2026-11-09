@@ -181,6 +181,11 @@
                         "bool": true
                     }
                 },
+                "applyOnDateSelect": {
+                    "type": {
+                        "bool": true
+                    }
+                },
                 "forceStartRange": {
                     "type": {
                         "bool": true
@@ -410,6 +415,21 @@
                     }
                 },
                 "showExpand": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "showStartupRangeButton": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "showStartIconText": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "hideIfCurrent": {
                     "type": {
                         "bool": true
                     }

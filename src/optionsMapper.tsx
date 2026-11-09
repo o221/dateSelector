@@ -65,12 +65,18 @@ export const settingProps = (
     layoutMove: move,
     layoutTimeline: timeline,
     layoutHelp: help,
+    startupRange,
   } = layout;
 
   const stepInit = String(calendar.stepInit.value);
   const singleDay = calendar.singleDay.value;
   const limitToScope = calendar.limitToScope.value;
+  const applyOnDateSelect = calendar.applyOnDateSelect.value;
   const forceStartRange = calendar.forceStartRange.value;
+  const showStartupRangeButton = startupRange.showStartupRangeButton.value;
+  const showStartIconText = startupRange.showStartIconText?.value ?? false;
+  const hideIfCurrent = startupRange.hideIfCurrent?.value ?? true;
+  const disableRefreshButton = calendar.disableRefreshButton?.value ?? false;
   const showCurrentInScopeOnly = current.showCurrentInScopeOnly.value;
   const scaleIconText = current.scaleIconText.value;
 
@@ -98,7 +104,12 @@ export const settingProps = (
     stepInit,
     singleDay,
     limitToScope,
+    applyOnDateSelect,
     forceStartRange,
+    showStartupRangeButton,
+    showStartIconText,
+    hideIfCurrent,
+    disableRefreshButton,
 
     stepSkip: {
       day: nonNeg(day.daySkip.value),
